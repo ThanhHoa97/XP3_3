@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario Video Player</title>
+    <style>
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        video {
+            width: 300px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scenario Video Player</h1>
+    <label for="participantId">Enter Participant ID:</label>
+    <input type="number" id="participantId" min="1">
+    <button onclick="loadParticipantData()">Load Videos</button>
+    <button onclick="loadNextVideo()">Next Video</button>
+    <div id="videoContainer" class="video-container"></div>
+    
+    <script>
+        let scenarioOrder = [];
+        let videoOrder = [];
+        let scenarioIndex = 0;
+        let videoIndex = 0;
+        let participantData = {};
+
+        // Define video paths manually
+        let videoPaths = {
+            1: ["Videos/scenario1/video1.mp4", "Videos/scenario1/video2.mp4"],
+            2: ["Videos/scenario2/video1.mp4", "Videos/scenario2/video2.mp4"],
+            3: ["Videos/scenario3/video1.mp4", "Videos/scenario3/video2.mp4"],
+            4: ["Videos/scenario4/video1.mp4", "Videos/scenario4/video2.mp4"],
+            5: ["Videos/scenario5/video1.mp4", "Videos/scenario5/video2.mp4"]
+        };
+
+        async function loadCSV() {
+            const response = await fetch('latinSquare.csv'); // Ensure the CSV file is available
+            const data = await response.text();
+            console.log("data is : ", data);
+            parseCSV(data);
+        }
+
+        function parseCSV(data) {
+            const rows = data.split('\n').map(row => row.split(','));
+            rows.forEach(row => {
+                const id = parseInt(row[0]);
+                const scenarioSeq = row[1].trim().split(' ').map(Number);
+                const videoSeq = row[2].trim().split(' ').map(Number);
+                participantData[id] = { scenarioOrder: scenarioSeq, videoOrder: videoSeq };
+            });
+        }
+
+        function loadParticipantData() {
+            const participantId = parseInt(document.getElementById('participantId').value);
+            if (participantData[participantId]) {
+                scenarioOrder = participantData[participantId].scenarioOrder;
+                videoOrder = participantData[participantId].videoOrder;
+                scenarioIndex = 0;
+                videoIndex = 0;
+                loadNextVideo();
+            } else {
+                alert('Participant ID not found');
+            }
+        }
+
+        function loadNextVideo() {
+            if (scenarioIndex >= scenarioOrder.length) {
+                alert('All videos played');
+                return;
+            }
+            const currentScenario = scenarioOrder[scenarioIndex];
+            const currentVideoIndex = videoOrder[videoIndex] - 1;
+            const videoContainer = document.getElementById('videoContainer');
+            videoContainer.innerHTML = '';
+            
+            if (videoPaths[currentScenario] && videoPaths[currentScenario][currentVideoIndex]) {
+                const videoSrc = videoPaths[currentScenario][currentVideoIndex];
+                const videoElement = document.createElement('video');
+                videoElement.src = videoSrc;
+                videoElement.controls = true;
+                videoElement.onclick = () => videoElement.play();
+                videoContainer.appendChild(videoElement);
+            }
+            
+            videoIndex++;
+            if (videoIndex >= videoOrder.length) {
+                videoIndex = 0;
+                scenarioIndex++;
+            }
+        }
+
+        loadCSV();
+    </script>
+</body>
+</html>
