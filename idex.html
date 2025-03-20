@@ -5,33 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scenario Video Player</title>
     <style>
-        .video-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        video {
-            width: 300px;
-            cursor: pointer;
-        }
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        #container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #video-container { margin-top: 20px; }
+        #videoPlayer { width: 100%; border-radius: 10px; }
+        .info { font-size: 18px; margin: 10px 0; font-weight: bold; }
+        .btn { display: none; margin-top: 20px; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
+        #nextVideoBtn { background: #28a745; color: white; }
+        #nextScenarioBtn { background: #007bff; color: white; }
+        #nextVideoBtn:hover { background: #218838; }
+        #nextScenarioBtn:hover { background: #0056b3; }
     </style>
 </head>
 <body>
-    <h1>Scenario Video Player</h1>
-    <label for="participantId">Enter Participant ID:</label>
-    <input type="number" id="participantId" min="1">
-    <button onclick="loadParticipantData()">Load Videos</button>
-    <button onclick="loadNextVideo()">Next Video</button>
-    <div id="videoContainer" class="video-container"></div>
-    
+    <div id="container">
+        <h1>Scenario Video Player</h1>
+        <label for="participantId">Enter ID:</label>
+        <input type="text" id="participantId">
+        <button onclick="loadCSV()">Load Videos</button>
+        <div id="video-container">
+            <p class="info" id="scenarioInfo"></p>
+            <p class="info" id="videoInfo"></p>
+            <p class="info" id="remainingInfo"></p>
+            <video id="videoPlayer" controls onclick="playVideo()">
+                Your browser does not support the video tag.
+            </video>
+            <button id="nextVideoBtn" class="btn" onclick="nextVideo()">Next Video</button>
+            <button id="nextScenarioBtn" class="btn" onclick="nextScenario()">Next Scenario</button>
+        </div>
+    </div>
+
     <script>
+        let currentId = localStorage.getItem("currentId") || null;
         let scenarioOrder = [];
         let videoOrder = [];
-        let scenarioIndex = 0;
-        let videoIndex = 0;
-        let participantData = {};
 
-        // Define video paths manually
+        let scenarioIndex = parseInt(localStorage.getItem("scenarioIndex")) || 0;
+        let videoIndex = parseInt(localStorage.getItem("videoIndex")) || 0;
+        
+        let storedScenarioOrder = localStorage.getItem("scenarioOrder");
+        let storedVideoOrder = localStorage.getItem("videoOrder");
+
         let videoPaths = {
             1: ["Videos/scenario1/video1.mp4", "Videos/scenario1/video2.mp4"],
             2: ["Videos/scenario2/video1.mp4", "Videos/scenario2/video2.mp4"],
@@ -40,63 +54,126 @@
             5: ["Videos/scenario5/video1.mp4", "Videos/scenario5/video2.mp4"]
         };
 
+        
+        const videoPlayer = document.getElementById("videoPlayer");
+        const nextVideoBtn = document.getElementById("nextVideoBtn");
+        const nextScenarioBtn = document.getElementById("nextScenarioBtn");
+        const videoContainer = document.getElementById("video-container");
+        const scenarioInfo = document.getElementById("scenarioInfo");
+        const videoInfo = document.getElementById("videoInfo");
+        const remainingInfo = document.getElementById("remainingInfo");
+
+        function saveProgress() {
+            localStorage.setItem("currentId", currentId);
+            localStorage.setItem("scenarioIndex", scenarioIndex);
+            localStorage.setItem("videoIndex", videoIndex);
+        }
+
         async function loadCSV() {
-            const response = await fetch('latinSquare.csv'); // Ensure the CSV file is available
-            const data = await response.text();
-            console.log("data is : ", data);
-            parseCSV(data);
-        }
-
-        function parseCSV(data) {
-            const rows = data.split('\n').map(row => row.split(','));
-            rows.forEach(row => {
-                const id = parseInt(row[0]);
-                const scenarioSeq = row[1].trim().split(' ').map(Number);
-                const videoSeq = row[2].trim().split(' ').map(Number);
-                participantData[id] = { scenarioOrder: scenarioSeq, videoOrder: videoSeq };
-            });
-        }
-
-        function loadParticipantData() {
-            const participantId = parseInt(document.getElementById('participantId').value);
-            if (participantData[participantId]) {
-                scenarioOrder = participantData[participantId].scenarioOrder;
-                videoOrder = participantData[participantId].videoOrder;
-                scenarioIndex = 0;
-                videoIndex = 0;
-                loadNextVideo();
-            } else {
-                alert('Participant ID not found');
-            }
-        }
-
-        function loadNextVideo() {
-            if (scenarioIndex >= scenarioOrder.length) {
-                alert('All videos played');
+            const id = document.getElementById("participantId").value;
+            if (!id) {
+                alert("Please enter an ID");
                 return;
             }
-            const currentScenario = scenarioOrder[scenarioIndex];
-            const currentVideoIndex = videoOrder[videoIndex] - 1;
-            const videoContainer = document.getElementById('videoContainer');
-            videoContainer.innerHTML = '';
-            
-            if (videoPaths[currentScenario] && videoPaths[currentScenario][currentVideoIndex]) {
-                const videoSrc = videoPaths[currentScenario][currentVideoIndex];
-                const videoElement = document.createElement('video');
-                videoElement.src = videoSrc;
-                videoElement.controls = true;
-                videoElement.onclick = () => videoElement.play();
-                videoContainer.appendChild(videoElement);
-            }
-            
-            videoIndex++;
-            if (videoIndex >= videoOrder.length) {
+
+            if (id !== currentId) {
+                // New participant, reset progress
+                currentId = id;
+                scenarioIndex = 0;
                 videoIndex = 0;
-                scenarioIndex++;
+                localStorage.setItem("currentId", currentId);
+                localStorage.setItem("scenarioIndex", scenarioIndex);
+                localStorage.setItem("videoIndex", videoIndex);
+                localStorage.removeItem("scenarioOrder");
+                localStorage.removeItem("videoOrder");
+            }
+
+            try {
+                const response = await fetch("latinSquare.csv");
+                const data = await response.text();
+
+                const rows = data.split("\n").map(row => row.split(","));
+                for (let row of rows) {
+                    if (row[0] === id) {
+                        scenarioOrder = row[1].split(" ").map(Number);
+                        videoOrder = row[2].split(" ").map(Number);
+                        localStorage.setItem("scenarioOrder", JSON.stringify(scenarioOrder));
+                        localStorage.setItem("videoOrder", JSON.stringify(videoOrder));
+                        break;
+                    }
+                }
+
+                if (scenarioOrder.length === 0 || videoOrder.length === 0) {
+                    alert("ID not found in the CSV file");
+                    return;
+                }
+
+                videoContainer.style.display = "block";
+                loadVideo();
+            } catch (error) {
+                console.error("Error loading CSV:", error);
             }
         }
 
-        loadCSV();
+        function loadVideo() {
+            if (storedScenarioOrder && storedVideoOrder && currentId === localStorage.getItem("currentId")) {
+                scenarioOrder = JSON.parse(localStorage.getItem("scenarioOrder"));
+                videoOrder = JSON.parse(localStorage.getItem("videoOrder"));
+            }
+
+            const scenario = scenarioOrder[scenarioIndex];
+            const videoNum = videoOrder[videoIndex];
+            videoPlayer.src = videoPaths[scenario][videoNum - 1];
+            videoPlayer.load();
+            nextVideoBtn.style.display = "none";
+            nextScenarioBtn.style.display = "none";
+            updateInfo();
+        }
+
+        function updateInfo() {
+            scenarioInfo.textContent = `Current Scenario: ${scenarioIndex + 1} / ${scenarioOrder.length}`;
+            videoInfo.textContent = `Current Video: ${videoIndex + 1} / ${videoOrder.length}`;
+            remainingInfo.textContent = `Remaining Videos in this Scenario: ${videoOrder.length - videoIndex - 1}, Remaining Scenarios: ${scenarioOrder.length - scenarioIndex - 1}`;
+        }
+
+        function playVideo() {
+            videoPlayer.play();
+        }
+
+        videoPlayer.onended = function() {
+            if (videoIndex < videoOrder.length - 1) {
+                nextVideoBtn.style.display = "inline-block";
+            } else {
+                nextScenarioBtn.style.display = "inline-block";
+            }
+        };
+
+        function nextVideo() {
+            videoIndex++;
+            saveProgress();
+            if (videoIndex < videoOrder.length) {
+                loadVideo();
+            }
+        }
+
+        function nextScenario() {
+            scenarioIndex++;
+            videoIndex = 0;
+            saveProgress();
+            if (scenarioIndex < scenarioOrder.length) {
+                loadVideo();
+            } else {
+                alert("All scenarios completed!");
+                localStorage.clear();
+            }
+        }
+
+        if (storedScenarioOrder && storedVideoOrder) {
+            document.getElementById("participantId").value = localStorage.getItem("currentId");
+            videoContainer.style.display = "block";
+            loadVideo();
+        }
+
     </script>
 </body>
 </html>
