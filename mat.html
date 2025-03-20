@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initialscale=1.0">
+    <title>Video Example</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
+    <script src="fireBaseConfig.js"></script>
+
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1000px; 
+            margin: 10px auto; 
+            background-color: #f4f4f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #444;
+        }
+        .category { 
+            margin-top: 40px; 
+            padding: 20px; 
+            background-color: #fff; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .video { 
+            display: inline-block; 
+            margin-right: 20px; 
+            margin-bottom: 20px;
+        }
+        .question { 
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        }
+        label { 
+            font-weight: bold; 
+        }
+        .likert-options { 
+            display: flex; 
+            justify-content: space-between; 
+        }
+        .option { 
+            display: inline-flex; 
+            align-items: center; 
+        }
+        .submit { 
+            margin-top: 20px; 
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: #fff; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+        }
+        .submit:hover {
+            background-color: #0056b3;
+        }
+        #responseMessage { 
+            margin-top: 20px; 
+            font-weight: bold; 
+            color: green; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Categories</h1>
+
+    <div class="category">
+        <h2>Scenario 1 </h2>
+        <div class="video">
+            <h3>France </h3>
+            <video controls width="350">
+                <source src="Mat/video1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video1-1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video1-2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        
+    </div>
+
+    <div class="category">
+        <h2>Scenario 2 </h2>
+        <div class="video">
+            <h3>France </h3>
+            <video controls width="350">
+                <source src="Mat/video2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video2-1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Scenario 3</h2>
+        <div class="video">
+            <h3>France </h3>
+            <video controls width="350">
+                <source src="Mat/video3.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video3-1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Scenario 4</h2>
+        <div class="video">
+            <h3>France </h3>
+            <video controls width="350">
+                <source src="Mat/video4.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video4-1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="video">
+            <h3>Australia </h3>
+            <video controls width="350">
+                <source src="Mat/video4-2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        
+    </div>
+
+
+    <div id="responseMessage"></div>
+    
+</body>
+</html>
