@@ -22,6 +22,7 @@ let data = [];
 let responses = [];
 let rankingMode = false;
 const ref = firebase.database().ref('XP3');
+const options = ["Baseline", "Single Goal", "Multiple Goals", "Single Path", "Multiple Paths"];
 
 // Load CSV file
 async function loadCSV() {
@@ -59,6 +60,53 @@ function startExperiment() {
 
     loadQuestionnaire();
 }
+
+
+function populateDropdowns() {
+    document.querySelectorAll(".ranking-dropdown").forEach(dropdown => {
+        options.forEach(opt => {
+            let optionElement = document.createElement("option");
+            optionElement.value = opt;
+            optionElement.textContent = opt;
+            dropdown.appendChild(optionElement);
+        });
+
+        dropdown.addEventListener("change", updateDropdownOptions);
+    });
+}
+
+function updateDropdownOptions(event) {
+    let selectedDropdown = event.target;
+    let selectedValue = selectedDropdown.value;
+    let row = selectedDropdown.closest("tr");
+    let dropdownsInRow = row.querySelectorAll(".ranking-dropdown");
+
+    // Restore previously selected value in other dropdowns
+    dropdownsInRow.forEach(dropdown => {
+        if (dropdown !== selectedDropdown) {
+            let selectedOptions = Array.from(dropdownsInRow).map(d => d.value);
+            let newOptions = options.filter(opt => !selectedOptions.includes(opt) || opt === dropdown.value);
+
+            // Remove old options
+            dropdown.innerHTML = "";
+            // Add new options
+            newOptions.forEach(opt => {
+                let optionElement = document.createElement("option");
+                optionElement.value = opt;
+                optionElement.textContent = opt;
+                dropdown.appendChild(optionElement);
+            });
+
+            // Restore previous selection if still valid
+            if (selectedOptions.includes(dropdown.value)) {
+                dropdown.value = dropdown.value;
+            } else {
+                dropdown.selectedIndex = 0;
+            }
+        }
+    });
+}
+
 
 function loadQuestionnaire() {
     if (currentScenarioIndex >= scenarioOrder.length) {
@@ -127,6 +175,7 @@ async function saveAndNext() {
 function showRankingQuestionnaire() {
     document.getElementById("questionnaire-form").style.display = "none";
     document.getElementById("ranking-form").style.display = "block";
+    populateDropdowns();
 }
 
 async function saveRankingData() {

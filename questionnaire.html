@@ -61,52 +61,46 @@
             <p>Please provide your rankings for each visualization (1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good)) across the factors below.</p>
             <p>Veuillez indiquer votre classement pour chaque visualisation (1 (meilleur), 2 (deuxième meilleur), 3 (neutre), 4 (en dessous de la moyenne), 5 (moins bon)) en fonction des facteurs ci-dessous. Chaque valeur d'une ligne doit être unique.</p>
             <table>
-                <thead>
-                    <tr>
-                        <th>Factor</th>
-                        <th>Baseline</th>
-                        <th>Single goal</th>
-                        <th class="removable">Multiple goals</th>
-                        <th>Single path</th>
-                        <th class="removable">Multiple paths</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-factor="Trust">
-                        <td>Trust <i>(Confiance)</i></td>
-                        <td><input type="number" name="trust1" min="1" max="5" required></td>
-                        <td><input type="number" name="trust2" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="trust3" min="1" max="5" required></td>
-                        <td><input type="number" name="trust4" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="trust5" min="1" max="5" required></td>
-
-                    </tr>
-                    <tr data-factor="Situation Awareness">
-                        <td>Situation Awareness (SA) <i>(Conscience de la situation)</i></td>
-                        <td><input type="number" name="sa1" min="1" max="5" required></td>
-                        <td><input type="number" name="sa2" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="sa3" min="1" max="5" required></td>
-                        <td><input type="number" name="sa4" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="sa5" min="1" max="5" required></td>
-
-                    </tr>
-                    <tr data-factor="Safety">
-                        <td>Safety <i>(Sécurité)</i></td>
-                        <td><input type="number" name="safety1" min="1" max="5" required></td>
-                        <td><input type="number" name="safety2" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="safety3" min="1" max="5" required></td>
-                        <td><input type="number" name="safety4" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="safety5" min="1" max="5" required></td>
-                    </tr>
-                    <tr data-factor="Likability">
-                        <td>Likability <i>(L'attractivité)</i></td>
-                        <td><input type="number" name="likability1" min="1" max="5" required></td>
-                        <td><input type="number" name="likability2" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="likability3" min="1" max="5" required></td>
-                        <td><input type="number" name="likability4" min="1" max="5" required></td>
-                        <td class="removable"><input type="number" name="likability5" min="1" max="5" required></td>
-                    </tr>
-                </tbody>
+                <tr>
+                    <th>Factor</th>
+                    <th>1. Best</th>
+                    <th>2. Second Best</th>
+                    <th>3. Neutral</th>
+                    <th>4. Below Average</th>
+                    <th>5. Not Good</th>
+                </tr>
+                <tr data-factor="Trust">
+                    <td>Trust <i>(Confiance)</i></td>
+                    <td><select class="ranking-dropdown" name="trust1"></select></td>
+                    <td><select class="ranking-dropdown" name="trust2"></select></td>
+                    <td><select class="ranking-dropdown" name="trust3"></select></td>
+                    <td><select class="ranking-dropdown" name="trust4"></select></td>
+                    <td><select class="ranking-dropdown" name="trust5"></select></td>
+                </tr>
+                <tr data-factor="Situation Awareness">
+                    <td>Situation Awareness <i>(Conscience de la situation)</i></td>
+                    <td><select class="ranking-dropdown" name="sa1"></select></td>
+                    <td><select class="ranking-dropdown" name="sa2"></select></td>
+                    <td><select class="ranking-dropdown" name="sa3"></select></td>
+                    <td><select class="ranking-dropdown" name="sa4"></select></td>
+                    <td><select class="ranking-dropdown" name="sa5"></select></td>
+                </tr>
+                <tr data-factor="Safety">
+                    <td>Safety <i>(Sécurité)</i></td>
+                    <td><select class="ranking-dropdown" name="safety1"></select></td>
+                    <td><select class="ranking-dropdown" name="safety2"></select></td>
+                    <td><select class="ranking-dropdown" name="safety3"></select></td>
+                    <td><select class="ranking-dropdown" name="safety4"></select></td>
+                    <td><select class="ranking-dropdown" name="safety5"></select></td>
+                </tr>
+                <tr data-factor="Likability">
+                    <td>Likability <i>(L'attractivité)</i></td>
+                    <td><select class="ranking-dropdown" name="likability1"></select></td>
+                    <td><select class="ranking-dropdown" name="likability2"></select></td>
+                    <td><select class="ranking-dropdown" name="likability3"></select></td>
+                    <td><select class="ranking-dropdown" name="likability4"></select></td>
+                    <td><select class="ranking-dropdown" name="likability5"></select></td>
+                </tr>
             </table>
             <button type="button" onclick="saveAndNext()">Submit Ranking</button>
         </form>
