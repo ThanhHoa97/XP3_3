@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Vehicle Questionnaire</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div id="participant-input">
+            <h2>Enter Participant ID</h2>
+            <input type="text" id="participant-id" placeholder="Enter ID">
+            <button onclick="startExperiment()">Start</button>
+        </div>
+
+        <div id="questionnaire-container" style="display: none;">
+            <h3 id="scenario-info"></h3>
+            <form id="questionnaire-form">
+                <div class="question">
+                    <label>1. I trust the system</label>
+                    <p><i>Je fais confiance au système</i></p>
+                    <div class="likert-scale">
+                        <label><input type="radio" name="q1" value="1"> 1 Strongly Disagree</label>
+                        <label><input type="radio" name="q1" value="2"> 2</label>
+                        <label><input type="radio" name="q1" value="3"> 3</label>
+                        <label><input type="radio" name="q1" value="4"> 4</label>
+                        <label><input type="radio" name="q1" value="5"> 5</label>
+                        <label><input type="radio" name="q1" value="6"> 6</label>
+                        <label><input type="radio" name="q1" value="7"> 7 Strongly Agree</label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>2. How easily can you detect the dangerous element?</label>
+                    <p><i>Dans quelle mesure pouvez-vous détecter facilement l’élément dangereux ?</i></p>
+                    <div class="likert-scale">
+                        <label><input type="radio" name="q2" value="1"> 1 Very Easy</label>
+                        <label><input type="radio" name="q2" value="2"> 2</label>
+                        <label><input type="radio" name="q2" value="3"> 3</label>
+                        <label><input type="radio" name="q2" value="4"> 4</label>
+                        <label><input type="radio" name="q2" value="5"> 5</label>
+                        <label><input type="radio" name="q2" value="6"> 6</label>
+                        <label><input type="radio" name="q2" value="7"> 7 Very Difficult</label>
+                    </div>
+                </div>
+
+                <button type="button" onclick="saveAndNext()">Next</button>
+            </form>
+        </div>
+
+        <form id="ranking-form" style="display: none;">
+            <h3>Thanks for finishing this scenario. <i>(Merci d'avoir terminé ce scénario)</i></h3>
+            <p>Please provide your rankings for each visualization (1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good)) across the factors below.</p>
+            <p>Veuillez indiquer votre classement pour chaque visualisation (1 (meilleur), 2 (deuxième meilleur), 3 (neutre), 4 (en dessous de la moyenne), 5 (moins bon)) en fonction des facteurs ci-dessous. Chaque valeur d'une ligne doit être unique.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Baseline</th>
+                        <th>Single goal</th>
+                        <th class="removable">Multiple goals</th>
+                        <th>Single path</th>
+                        <th class="removable">Multiple paths</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-factor="Trust">
+                        <td>Trust <i>(Confiance)</i></td>
+                        <td><input type="number" name="trust1" min="1" max="5" required></td>
+                        <td><input type="number" name="trust2" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="trust3" min="1" max="5" required></td>
+                        <td><input type="number" name="trust4" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="trust5" min="1" max="5" required></td>
+
+                    </tr>
+                    <tr data-factor="Situation Awareness">
+                        <td>Situation Awareness (SA) <i>(Conscience de la situation)</i></td>
+                        <td><input type="number" name="sa1" min="1" max="5" required></td>
+                        <td><input type="number" name="sa2" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="sa3" min="1" max="5" required></td>
+                        <td><input type="number" name="sa4" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="sa5" min="1" max="5" required></td>
+
+                    </tr>
+                    <tr data-factor="Safety">
+                        <td>Safety <i>(Sécurité)</i></td>
+                        <td><input type="number" name="safety1" min="1" max="5" required></td>
+                        <td><input type="number" name="safety2" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="safety3" min="1" max="5" required></td>
+                        <td><input type="number" name="safety4" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="safety5" min="1" max="5" required></td>
+                    </tr>
+                    <tr data-factor="Likability">
+                        <td>Likability <i>(L'attractivité)</i></td>
+                        <td><input type="number" name="likability1" min="1" max="5" required></td>
+                        <td><input type="number" name="likability2" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="likability3" min="1" max="5" required></td>
+                        <td><input type="number" name="likability4" min="1" max="5" required></td>
+                        <td class="removable"><input type="number" name="likability5" min="1" max="5" required></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" onclick="saveAndNext()">Submit Ranking</button>
+        </form>
+
+    </div>
+</body>
+</html>
