@@ -25,7 +25,7 @@
             <h3 id="scenario-info"></h3>
             <form id="questionnaire-form">
                 <div class="question">
-                    <label>1. I trust the system</label>
+                    <label for="q1">1. I trust the system</label>
                     <p><i>Je fais confiance au système</i></p>
                     <div class="likert-scale">
                         <label><input type="radio" name="q1" value="1"> 1 Strongly Disagree</label>
@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="question">
-                    <label>2. How easily can you detect the dangerous element?</label>
+                    <label for="q2">2. How easily can you detect the dangerous element?</label>
                     <p><i>Dans quelle mesure pouvez-vous détecter facilement l’élément dangereux ?</i></p>
                     <div class="likert-scale">
                         <label><input type="radio" name="q2" value="1"> 1 Very Easy</label>
@@ -56,9 +56,40 @@
             </form>
         </div>
 
+         <!-- image for scenario 1 -->
+         <div class="image-container" id="image-container-1">
+            <!-- Image 1 -->
+            <img src="images/image1.png" alt="Image 1">
+        </div>
+
+        <!-- image for scenario 2 -->
+        <div class="image-container" id="image-container-2">
+            <!-- Image 1 -->
+            <img src="images/image2.png" alt="Image 2">
+        </div>
+
+        <!-- image for scenario 3 -->
+        <div class="image-container" id="image-container-3">
+            <!-- Image 1 -->
+            <img src="images/image3.png" alt="Image 3">
+        </div>
+
+         <!-- image for scenario 4 -->
+         <div class="image-container" id="image-container-4">
+            <!-- Image 1 -->
+            <img src="images/image4.png" alt="Image 4">
+        </div>
+
+        <!-- image for scenario 5 -->
+        <div class="image-container" id="image-container-5">
+            <!-- Image 1 -->
+            <img src="images/image5.png" alt="Image 5">
+        </div>
+
         <form id="ranking-form" style="display: none;">
             <h3>Thanks for finishing this scenario. <i>(Merci d'avoir terminé ce scénario)</i></h3>
-            <p>Please provide your rankings for each visualization (1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good)) across the factors below.</p>
+            <p>Please provide your rankings for each visualization</p>
+            <p1>(1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good)) across the factors below.</p1>
             <p>Veuillez indiquer votre classement pour chaque visualisation (1 (meilleur), 2 (deuxième meilleur), 3 (neutre), 4 (en dessous de la moyenne), 5 (moins bon)) en fonction des facteurs ci-dessous. Chaque valeur d'une ligne doit être unique.</p>
             <table>
                 <thead>
@@ -108,8 +139,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="error-message" id="error-message"></div>
             <button type="button" onclick="saveRanking()">Submit Ranking</button>
         </form>
+
+       
 
     </div>
 </body>

@@ -14,13 +14,22 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const ref = firebase.database().ref('XP3');
+const url = "https://raw.githubusercontent.com/ThanhHoa97/XP3_3/main/latinSquare.csv";
+let rankingMode = false;
+
+
 
 // Load CSV file
 async function loadCSV() {
-    const response = await fetch('latinSquare.csv'); // Ensure 'order.csv' is in the same folder
+
+    const response = await fetch(url);
+    //const data = await response.text();
+
+    //const response = await fetch('latinSquare.csv'); // Ensure 'order.csv' is in the same folder
     const text = await response.text();
     const rows = text.trim().split("\n").map(row => row.split(","));
-
+    console.log("text is :", text);
+    data = [];
     data = rows.map(row => ({
         id: row[0].trim(),
         scenarioOrder: row[1].trim().split(" ").map(Number),
@@ -55,11 +64,26 @@ function startExperiment() {
 
 function loadQuestionnaire() {
 
+    //get scenario indiex for image
+    let strScenario = scenarioOrder[currentScenarioIndex];
+    console.log("scenarioOrder : ",scenarioOrder);
+    console.log("currentScenarioIndex : ",currentScenarioIndex);
+    console.log("strScenario : ",strScenario);
+    //let lastChar = strScenario.charAt(strScenario.length - 1);
+    console.log("lastChar ", strScenario);
+    let imagecontainerId = 'image-container-'+ strScenario;
+    let imagecontainer = document.getElementById(imagecontainerId);
+    console.log("imagecontainerId : ",imagecontainerId);
+    console.log("imagecontainer : ",imagecontainer);
+    ////
+
     if (rankingMode) {
+        imagecontainer.style.display = "block";
         showRankingQuestionnaire();
         return;
     }
 
+    imagecontainer.style.display = "none";
     if (currentScenarioIndex >= scenarioOrder.length) {
         document.getElementById("questionnaire-container").innerHTML = "<h3>Thank you for completing the experiment!</h3>";
         return;
@@ -83,7 +107,17 @@ function sendDataToFirebase() {
         });
 
 
-        console.log("hihi");
+        console.log("q1 and q2 is: ", q1, q2);
+}
+
+function getSelectedValue(questionId) {
+    const selectedRadio = document.querySelector(`input[name="${questionId}"]:checked`);
+    return selectedRadio ? selectedRadio.value : null;
+}
+
+function clearAnswers(sectionId) {
+    const radios = document.querySelectorAll(`#${sectionId} input[type="radio"]`);
+    radios.forEach(radio => radio.checked = false);
 }
 
 async function saveAndNext() {
@@ -111,6 +145,7 @@ async function saveAndNext() {
     
     sendDataToFirebase();
     
+    clearAnswers('questionnaire-container');
     currentVideoIndex++;
     if (currentVideoIndex >= videoOrder.length) {
         rankingMode = true; // Trigger ranking questionnaire
@@ -129,6 +164,10 @@ async function saveRanking() {
     let scenario = scenarioOrder[currentScenarioIndex];
 
     let rankings = {};
+    let valid = true;
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = '';
+
     document.querySelectorAll("#ranking-form input[type='number']").forEach(input => {
         let value = parseInt(input.value);
         if (value < 1 || value > 5 || isNaN(value)) {
@@ -137,27 +176,54 @@ async function saveRanking() {
         }
         rankings[input.name] = value;
     });
+    
+    const rows = document.querySelectorAll('tbody tr');
+    console.log("row is: ", rows);
+    rows.forEach(row => {
+        const inputs = Array.from(row.querySelectorAll('input[type="number"]'));
+        const values = inputs.map(input => input.value);
 
-    rankings = {
-        participantID,
-        scenario,
-        rankings,
-        timestamp: new Date().toISOString()
-    };
-
-    ref.push(rankings)
-    .then(() => {
-        //alert("Data successfully sent to Firebase!");
-    })
-    .catch((error) => {
-        console.error("Error sending data to Firebase:", error);
-        alert("Failed to send data to Firebase.");
+        // Check for duplicates
+        const uniqueValues = new Set(values);
+        if (uniqueValues.size !== values.length) {
+            valid = false;
+            const factor = row.getAttribute('data-factor');
+            console.log("factor is :", factor);
+            errorMessage.textContent = `Each value in the row for "${factor}" must be unique.`;
+        }
     });
 
-    rankingMode = false;
-    currentScenarioIndex++;
-    currentVideoIndex = 0;
- 
+    if (valid)
+    {
+        rankings = {
+            participantID,
+            scenario,
+            rankings,
+            timestamp: new Date().toISOString()
+        };
+    
+        console.log("rankings : ", rankings);
+    
+        ref.push(rankings)
+        .then(() => {
+            //alert("Data successfully sent to Firebase!");
+        })
+        .catch((error) => {
+            console.error("Error sending data to Firebase:", error);
+            alert("Failed to send data to Firebase.");
+        });
+    
+        rankingMode = false;
+        currentScenarioIndex++;
+        currentVideoIndex = 0;
+        document.getElementById("ranking-form").style.display = "none";
+        loadQuestionnaire();
+        document.getElementById("questionnaire-form").style.display = "block";
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.value = '';
+        });
+    }
+    
 }
 
 window.onload = loadCSV;
