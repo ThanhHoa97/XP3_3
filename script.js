@@ -13,16 +13,7 @@ const firebaseConfig = {
 // initialize firebase
 firebase.initializeApp(firebaseConfig);
 
-let participantID = null;
-let scenarioOrder = [];
-let videoOrder = [];
-let currentScenarioIndex = 0;
-let currentVideoIndex = 0;
-let data = [];
-let responses = [];
-let rankingMode = false;
 const ref = firebase.database().ref('XP3');
-const options = ["Baseline", "Single Goal", "Multiple Goals", "Single Path", "Multiple Paths"];
 
 // Load CSV file
 async function loadCSV() {
@@ -62,60 +53,15 @@ function startExperiment() {
 }
 
 
-function populateDropdowns() {
-    document.querySelectorAll(".ranking-dropdown").forEach(dropdown => {
-        options.forEach(opt => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt;
-            optionElement.textContent = opt;
-            dropdown.appendChild(optionElement);
-        });
-
-        dropdown.addEventListener("change", updateDropdownOptions);
-    });
-}
-
-function updateDropdownOptions(event) {
-    let selectedDropdown = event.target;
-    let selectedValue = selectedDropdown.value;
-    let row = selectedDropdown.closest("tr");
-    let dropdownsInRow = row.querySelectorAll(".ranking-dropdown");
-
-    // Restore previously selected value in other dropdowns
-    dropdownsInRow.forEach(dropdown => {
-        if (dropdown !== selectedDropdown) {
-            let selectedOptions = Array.from(dropdownsInRow).map(d => d.value);
-            let newOptions = options.filter(opt => !selectedOptions.includes(opt) || opt === dropdown.value);
-
-            // Remove old options
-            dropdown.innerHTML = "";
-            // Add new options
-            newOptions.forEach(opt => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt;
-                optionElement.textContent = opt;
-                dropdown.appendChild(optionElement);
-            });
-
-            // Restore previous selection if still valid
-            if (selectedOptions.includes(dropdown.value)) {
-                dropdown.value = dropdown.value;
-            } else {
-                dropdown.selectedIndex = 0;
-            }
-        }
-    });
-}
-
-
 function loadQuestionnaire() {
-    if (currentScenarioIndex >= scenarioOrder.length) {
-        document.getElementById("questionnaire-container").innerHTML = "<h3>Thank you for completing the experiment!</h3>";
-        return;
-    }
 
     if (rankingMode) {
         showRankingQuestionnaire();
+        return;
+    }
+
+    if (currentScenarioIndex >= scenarioOrder.length) {
+        document.getElementById("questionnaire-container").innerHTML = "<h3>Thank you for completing the experiment!</h3>";
         return;
     }
 
@@ -123,9 +69,7 @@ function loadQuestionnaire() {
     let video = videoOrder[currentVideoIndex];
 
     document.getElementById("scenario-info").innerText = `Scenario: ${scenario}, Video: ${video}`;
-    document.getElementById("questionnaire-form").reset();
-    document.getElementById("questionnaire-form").style.display = "block";
-    document.getElementById("ranking-form").style.display = "none";
+
 }
 
 function sendDataToFirebase() {
@@ -137,85 +81,71 @@ function sendDataToFirebase() {
             console.error("Error sending data to Firebase:", error);
             alert("Failed to send data to Firebase.");
         });
+
+
+        console.log("hihi");
 }
 
 async function saveAndNext() {
 
-    if (rankingMode) {
-        await saveRankingData();
-        rankingMode = false;
-        currentScenarioIndex++;
-        currentVideoIndex = 0;
-        loadQuestionnaire();
+    q1 = getSelectedValue('q1');
+    q2 = getSelectedValue('q2');
+    console.log("q1 and q2 is: ", q1, q2);
+
+    if (!q1 || !q2 ) {
+        alert("Please answer all required questions.");
         return;
     }
 
     let scenario = scenarioOrder[currentScenarioIndex];
     let video = videoOrder[currentVideoIndex];
-
+    
     responses = {
         participantID,
         scenario,
         video,
-        q1: document.querySelector('input[name="q1"]:checked')?.value || null,
-        q2: document.querySelector('input[name="q2"]:checked')?.value || null,
+        q1: q1,
+        q2: q2,
         timestamp: new Date().toISOString()
     };
-
+    
     sendDataToFirebase();
-
+    
     currentVideoIndex++;
     if (currentVideoIndex >= videoOrder.length) {
         rankingMode = true; // Trigger ranking questionnaire
     }
-
+    
     loadQuestionnaire();
+   
 }
 
 function showRankingQuestionnaire() {
     document.getElementById("questionnaire-form").style.display = "none";
     document.getElementById("ranking-form").style.display = "block";
-    populateDropdowns();
 }
 
-async function saveRankingData() {
+async function saveRanking() {
     let scenario = scenarioOrder[currentScenarioIndex];
 
-    let rankingData = {
+    let rankings = {};
+    document.querySelectorAll("#ranking-form input[type='number']").forEach(input => {
+        let value = parseInt(input.value);
+        if (value < 1 || value > 5 || isNaN(value)) {
+            alert("Ranking values must be between 1 and 5.");
+            return;
+        }
+        rankings[input.name] = value;
+    });
+
+    rankings = {
         participantID,
         scenario,
-        trust: {
-            baseline: document.querySelector('input[name="trust1"]').value,
-            singleGoal: document.querySelector('input[name="trust2"]').value,
-            multipleGoals: document.querySelector('input[name="trust3"]').value,
-            singlePath: document.querySelector('input[name="trust4"]').value,
-            multiplePaths: document.querySelector('input[name="trust5"]').value,
-        },
-        situationAwareness: {
-            baseline: document.querySelector('input[name="sa1"]').value,
-            singleGoal: document.querySelector('input[name="sa2"]').value,
-            multipleGoals: document.querySelector('input[name="sa3"]').value,
-            singlePath: document.querySelector('input[name="sa4"]').value,
-            multiplePaths: document.querySelector('input[name="sa5"]').value,
-        },
-        safety: {
-            baseline: document.querySelector('input[name="safety1"]').value,
-            singleGoal: document.querySelector('input[name="safety2"]').value,
-            multipleGoals: document.querySelector('input[name="safety3"]').value,
-            singlePath: document.querySelector('input[name="safety4"]').value,
-            multiplePaths: document.querySelector('input[name="safety5"]').value,
-        },
-        likability: {
-            baseline: document.querySelector('input[name="likability1"]').value,
-            singleGoal: document.querySelector('input[name="likability2"]').value,
-            multipleGoals: document.querySelector('input[name="likability3"]').value,
-            singlePath: document.querySelector('input[name="likability4"]').value,
-            multiplePaths: document.querySelector('input[name="likability5"]').value,
-        },
+        rankings,
         timestamp: new Date().toISOString()
     };
 
-    ref.push(rankingData)
+    ref.push(rankings)
     .then(() => {
         //alert("Data successfully sent to Firebase!");
     })
@@ -223,6 +153,11 @@ async function saveRankingData() {
         console.error("Error sending data to Firebase:", error);
         alert("Failed to send data to Firebase.");
     });
+
+    rankingMode = false;
+    currentScenarioIndex++;
+    currentVideoIndex = 0;
+ 
 }
 
 window.onload = loadCSV;
