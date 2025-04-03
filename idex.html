@@ -36,6 +36,8 @@
     </div>
 
     <script>
+        localStorage.clear();
+        alert("Local storage has been cleared!");
         let currentId = localStorage.getItem("currentId") || null;
         let scenarioOrder = [];
         let videoOrder = [];
@@ -50,11 +52,11 @@
 
 
         let videoPaths = {
-            1: ["Videos/scenario1/video1.mp4", "Videos/scenario1/video2.mp4"],
-            2: ["Videos/scenario2/video1.mp4", "Videos/scenario2/video2.mp4"],
-            3: ["Videos/scenario3/video1.mp4", "Videos/scenario3/video2.mp4"],
-            4: ["Videos/scenario4/video1.mp4", "Videos/scenario4/video2.mp4"],
-            5: ["Videos/scenario5/video1.mp4", "Videos/scenario5/video2.mp4"]
+            1: ["Videos/scenario1/video1.mp4", "Videos/scenario1/video2.mp4", "Videos/scenario1/video3.mp4", "Videos/scenario1/video4.mp4", "Videos/scenario1/video5.mp4"],
+            2: ["Videos/scenario2/video1.mp4", "Videos/scenario2/video2.mp4", "Videos/scenario2/video3.mp4", "Videos/scenario2/video4.mp4", "Videos/scenario2/video5.mp4"],
+            3: ["Videos/scenario3/video1.mp4", "Videos/scenario3/video2.mp4", "Videos/scenario3/video3.mp4", "Videos/scenario3/video4.mp4", "Videos/scenario3/video5.mp4"],
+            4: ["Videos/scenario4/video1.mp4", "Videos/scenario4/video2.mp4", "Videos/scenario4/video3.mp4", "Videos/scenario4/video4.mp4", "Videos/scenario4/video5.mp4"],
+            5: ["Videos/scenario5/video1.mp4", "Videos/scenario5/video2.mp4", "Videos/scenario5/video3.mp4", "Videos/scenario5/video4.mp4", "Videos/scenario5/video5.mp4"]
         };
 
         
@@ -125,6 +127,8 @@
                 videoOrder = JSON.parse(localStorage.getItem("videoOrder"));
             }
 
+            console.log("scenario is: ", scenarioOrder);
+            console.log("video is : ", videoOrder);
             const scenario = scenarioOrder[scenarioIndex];
             const videoNum = videoOrder[videoIndex];
             videoPlayer.src = videoPaths[scenario][videoNum - 1];
