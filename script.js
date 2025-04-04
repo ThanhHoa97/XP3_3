@@ -84,6 +84,7 @@ function loadQuestionnaire() {
     }
 
     imagecontainer.style.display = "none";
+    console.log("hoa");
     if (currentScenarioIndex >= scenarioOrder.length) {
         document.getElementById("questionnaire-container").innerHTML = "<h3>Thank you for completing the experiment!</h3>";
         return;
@@ -124,9 +125,12 @@ async function saveAndNext() {
 
     q1 = getSelectedValue('q1');
     q2 = getSelectedValue('q2');
+    q3 = getSelectedValue('q2');
+    q4 = getSelectedValue('q2');
+    q5 = getSelectedValue('q2');
     console.log("q1 and q2 is: ", q1, q2);
 
-    if (!q1 || !q2 ) {
+    if (!q1 || !q2 || !q3 || !q4 || !q5 ) {
         alert("Please answer all required questions.");
         return;
     }
@@ -140,12 +144,16 @@ async function saveAndNext() {
         video,
         q1: q1,
         q2: q2,
+        q3: q3,
+        q4: q4,
+        q5: q5,
         timestamp: new Date().toISOString()
     };
     
     sendDataToFirebase();
     
     clearAnswers('questionnaire-container');
+
     currentVideoIndex++;
     if (currentVideoIndex >= videoOrder.length) {
         rankingMode = true; // Trigger ranking questionnaire
@@ -213,6 +221,14 @@ async function saveRanking() {
             alert("Failed to send data to Firebase.");
         });
     
+        //get scenario index for image
+        let strScenario = scenarioOrder[currentScenarioIndex];
+        console.log("lastChar 2", strScenario);
+        let imagecontainerId = 'image-container-'+ strScenario;
+        document.getElementById(imagecontainerId).style.display = "none";
+        console.log("hoa2");
+
+
         rankingMode = false;
         currentScenarioIndex++;
         currentVideoIndex = 0;
@@ -222,6 +238,9 @@ async function saveRanking() {
         document.querySelectorAll('input[type="number"]').forEach(input => {
             input.value = '';
         });
+
+
+        
     }
     
 }

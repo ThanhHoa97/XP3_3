@@ -25,30 +25,76 @@
             <h3 id="scenario-info"></h3>
             <form id="questionnaire-form">
                 <div class="question">
-                    <label for="q1">1. I trust the system</label>
+                    <label for="q1">1. I trust the system </label>
                     <p><i>Je fais confiance au système</i></p>
                     <div class="likert-scale">
-                        <label><input type="radio" name="q1" value="1"> 1 Strongly Disagree</label>
+                        <label><input type="radio" name="q1" value="1"> 1<br>Strongly Disagree <i>(Pas du tout d'accord)</i></label>
                         <label><input type="radio" name="q1" value="2"> 2</label>
                         <label><input type="radio" name="q1" value="3"> 3</label>
                         <label><input type="radio" name="q1" value="4"> 4</label>
                         <label><input type="radio" name="q1" value="5"> 5</label>
                         <label><input type="radio" name="q1" value="6"> 6</label>
-                        <label><input type="radio" name="q1" value="7"> 7 Strongly Agree</label>
+                        <label><input type="radio" name="q1" value="7"> 7<br> Strongly Agree <i>(Tout à fait d'accord)</i></label>
                     </div>
                 </div>
-
+        
+                <!-- Question 2 -->
                 <div class="question">
                     <label for="q2">2. How easily can you detect the dangerous element?</label>
                     <p><i>Dans quelle mesure pouvez-vous détecter facilement l’élément dangereux ?</i></p>
                     <div class="likert-scale">
-                        <label><input type="radio" name="q2" value="1"> 1 Very Easy</label>
+                        <label><input type="radio" name="q2" value="1"> 1<br> Very Easy <i>(Très facile)</i></label>
                         <label><input type="radio" name="q2" value="2"> 2</label>
                         <label><input type="radio" name="q2" value="3"> 3</label>
                         <label><input type="radio" name="q2" value="4"> 4</label>
                         <label><input type="radio" name="q2" value="5"> 5</label>
                         <label><input type="radio" name="q2" value="6"> 6</label>
-                        <label><input type="radio" name="q2" value="7"> 7 Very Difficult</label>
+                        <label><input type="radio" name="q2" value="7"> 7<br> Very Difficult <i>(Très difficile)</i></label>
+                    </div>
+                </div>
+        
+                <!-- Question 3 -->
+                <div class="question">
+                    <label for="q3">3. How much is your attention divided in the situation? (are you concentrating on any aspect of the situation (High) (ex: dangerous element and environment around) or focused on only one (low))</label>
+                    <p><i>Dans quelle mesure votre attention est-elle divisée dans la situation ? (vous concentrez-vous sur tous les aspects de la situation (haut) (ex : élément dangereux et environnement alentour) ou sur un seul (bas))</i></p>
+                    <div class="likert-scale">
+                        <label><input type="radio" name="q3" value="1"> 1<br> Low-divided <i>(Faible division)</i></label>
+                        <label><input type="radio" name="q3" value="2"> 2</label>
+                        <label><input type="radio" name="q3" value="3"> 3</label>
+                        <label><input type="radio" name="q3" value="4"> 4</label>
+                        <label><input type="radio" name="q3" value="5"> 5</label>
+                        <label><input type="radio" name="q3" value="6"> 6</label>
+                        <label><input type="radio" name="q3" value="7"> 7<br> High-divided <i>(Hautement divisé)</i></label>
+                    </div>
+                </div>
+        
+                <!-- Question 4 -->
+                <div class="question">
+                    <label for="q4">4. How complicated is the situation? </label>
+                    <p><i>La situation est-elle compliquée ?</i></p>
+                    <div class="likert-scale">
+                        <label><input type="radio" name="q4" value="1"> 1<br> Very Simple <i>(Très simple)</i></label>
+                        <label><input type="radio" name="q4" value="2"> 2</label>
+                        <label><input type="radio" name="q4" value="3"> 3</label>
+                        <label><input type="radio" name="q4" value="4"> 4</label>
+                        <label><input type="radio" name="q4" value="5"> 5</label>
+                        <label><input type="radio" name="q4" value="6"> 6</label>
+                        <label><input type="radio" name="q4" value="7"> 7<br> Very Complex <i>(Très complexe)</i></label>
+                    </div>
+                </div>
+        
+                <!-- Question 5 -->
+                <div class="question">
+                    <label for="q5">5. Please rate your perceived safety with the system (autonomous vehicle and visualization)</label>
+                    <p><i>Veuillez évaluer votre perception de la sécurité du système (véhicule autonome et visualisation) </i></p>
+                    <div class="likert-scale">
+                        <label><input type="radio" name="q5" value="1"> 1<br>anxious / agitated / unsafe / timid</label>
+                        <label><input type="radio" name="q5" value="2"> 2</label>
+                        <label><input type="radio" name="q5" value="3"> 3</label>
+                        <label><input type="radio" name="q5" value="4"> 4</label>
+                        <label><input type="radio" name="q5" value="5"> 5</label>
+                        <label><input type="radio" name="q5" value="6"> 6</label>
+                        <label><input type="radio" name="q5" value="7"> 7<br>relaxed / calm / safe / confident</label>
                     </div>
                 </div>
 
@@ -88,18 +134,20 @@
 
         <form id="ranking-form" style="display: none;">
             <h3>Thanks for finishing this scenario. <i>(Merci d'avoir terminé ce scénario)</i></h3>
-            <p>Please provide your rankings for each visualization</p>
-            <p1>(1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good)) across the factors below.</p1>
-            <p>Veuillez indiquer votre classement pour chaque visualisation (1 (meilleur), 2 (deuxième meilleur), 3 (neutre), 4 (en dessous de la moyenne), 5 (moins bon)) en fonction des facteurs ci-dessous. Chaque valeur d'une ligne doit être unique.</p>
+            <p>Please provide your rankings for each visualization across the factors below.</p>
+            <p1>(1 (best), 2 (second best), 3 (neutral), 4 (below average), 5 (not good))</p1>
+            <p>Veuillez indiquer votre classement pour chaque visualisation en fonction des facteurs ci-dessous</p>
+            <p1>(1 (meilleur), 2 (deuxième meilleur), 3 (neutre), 4 (en dessous de la moyenne), 5 (moins bon))</p1>
+            <p>Chaque valeur d'une ligne doit être unique.</p> 
             <table>
                 <thead>
                     <tr>
                         <th>Factor</th>
                         <th>Baseline</th>
-                        <th>Single goal</th>
-                        <th>Multiple goals</th>
-                        <th>Single path</th>
-                        <th>Multiple paths</th>
+                        <th>Highlight</th>
+                        <th>Highlight + time</th>
+                        <th>Highlight + predict</th>
+                        <th>Highlight + time + predict</th>
                     </tr>
                 </thead>
                 <tbody>

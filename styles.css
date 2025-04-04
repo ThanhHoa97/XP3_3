@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    width: 1000px;
+    width: 800px;
     margin: auto; /* Centering the form */
     padding: 20px;
     background-color: #f9f9f9;
@@ -47,19 +47,31 @@ button:hover {
     background: #0056b3;
 }
 
+/* Questionnaire styles */
 .question {
-    margin: 15px 0;
-    text-align: left;
+    background: #f9f9f9;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
 }
 
 .likert-scale {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .likert-scale label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-size: 14px;
+    padding: 5px;
+}
+
+.likert-scale input {
+    margin-top: 5px;
 }
 
 #image-container-1,  #image-container-2,  #image-container-3,  #image-container-4,  #image-container-5 {
@@ -67,6 +79,6 @@ button:hover {
 }
 /* Style for each image */
 .image-container img {
-    width: 1000px;
+    width: 800px;
     object-fit: cover;
 }
