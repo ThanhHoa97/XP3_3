@@ -125,10 +125,9 @@ async function saveAndNext() {
 
     q1 = getSelectedValue('q1');
     q2 = getSelectedValue('q2');
-    q3 = getSelectedValue('q2');
-    q4 = getSelectedValue('q2');
-    q5 = getSelectedValue('q2');
-    console.log("q1 and q2 is: ", q1, q2);
+    q3 = getSelectedValue('q3');
+    q4 = getSelectedValue('q4');
+    q5 = getSelectedValue('q5');
 
     if (!q1 || !q2 || !q3 || !q4 || !q5 ) {
         alert("Please answer all required questions.");
@@ -180,6 +179,7 @@ async function saveRanking() {
         let value = parseInt(input.value);
         if (value < 1 || value > 5 || isNaN(value)) {
             alert("Ranking values must be between 1 and 5.");
+            valid = false;
             return;
         }
         rankings[input.name] = value;
